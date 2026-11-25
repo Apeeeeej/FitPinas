@@ -6,6 +6,8 @@ dist/
 .agents/
 .claude/
 .postman/
+AGENTS.md
+CLAUDE.md
 *.tsbuildinfo
 coverage/
 *.log
