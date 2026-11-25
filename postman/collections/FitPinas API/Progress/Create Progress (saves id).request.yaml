@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/progress"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "recordedAt": "2026-11-25",
+      "weightKg": 70.5,
+      "bodyFatPercent": 18.5,
+      "notes": "Initial progress"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const json = pm.response.json();
+      if (json.id) pm.collectionVariables.set('progressId', json.id);
+    language: text/javascript
+order: 3000

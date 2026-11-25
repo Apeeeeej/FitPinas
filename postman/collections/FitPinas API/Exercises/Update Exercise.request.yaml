@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/exercises/{{exerciseId}}"
+method: PATCH
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "difficulty": "intermediate"
+    }
+order: 4000

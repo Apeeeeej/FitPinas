@@ -1,0 +1,165 @@
+{
+  "info": {
+    "name": "FitPinas API",
+    "description": "Postman collection for the FitPinas NestJS backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": ["pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });"]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api" },
+    { "key": "token", "value": "" },
+    { "key": "email", "value": "your-email@example.com" },
+    { "key": "password", "value": "YourPassword123!" },
+    { "key": "exerciseId", "value": "1" },
+    { "key": "planId", "value": "1" },
+    { "key": "logId", "value": "1" },
+    { "key": "progressId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/" }
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"fullName\": \"Demo User\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login (saves token)",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": ["const json = pm.response.json();", "if (json.accessToken) pm.collectionVariables.set('token', json.accessToken);"]
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exercises",
+      "item": [
+        {
+          "name": "List Exercises",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/exercises" }
+        },
+        {
+          "name": "Get Exercise",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/exercises/{{exerciseId}}" }
+        },
+        {
+          "name": "Create Exercise (saves id)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const json = pm.response.json();", "if (json.id) pm.collectionVariables.set('exerciseId', json.id);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jumping Jacks\",\n  \"muscleGroup\": \"Full Body\",\n  \"difficulty\": \"beginner\",\n  \"equipment\": \"None\"\n}" },
+            "url": "{{baseUrl}}/exercises"
+          }
+        },
+        {
+          "name": "Update Exercise",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"difficulty\": \"intermediate\"\n}" },
+            "url": "{{baseUrl}}/exercises/{{exerciseId}}"
+          }
+        },
+        {
+          "name": "Delete Exercise",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/exercises/{{exerciseId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Workout Plans",
+      "item": [
+        {
+          "name": "List Plans",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/workout-plans" }
+        },
+        {
+          "name": "Get Plan",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/workout-plans/{{planId}}" }
+        },
+        {
+          "name": "Create Plan (saves id)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const json = pm.response.json();", "if (json.id) pm.collectionVariables.set('planId', json.id);"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Beginner Fitness Plan\",\n  \"description\": \"Basic workout routine\",\n  \"goal\": \"Strength\",\n  \"durationWeeks\": 4\n}" },
+            "url": "{{baseUrl}}/workout-plans"
+          }
+        },
+        {
+          "name": "Update Plan",
+          "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"goal\": \"Muscle Building\"\n}" }, "url": "{{baseUrl}}/workout-plans/{{planId}}" }
+        },
+        {
+          "name": "Delete Plan",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/workout-plans/{{planId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Workout Logs",
+      "item": [
+        { "name": "List Logs", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/workout-logs" } },
+        { "name": "Get Log", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/workout-logs/{{logId}}" } },
+        {
+          "name": "Create Log (saves id)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const json = pm.response.json();", "if (json.id) pm.collectionVariables.set('logId', json.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"workoutDate\": \"2026-11-25\",\n  \"durationMinutes\": 30,\n  \"caloriesBurned\": 200,\n  \"notes\": \"Morning workout\"\n}" }, "url": "{{baseUrl}}/workout-logs" }
+        },
+        { "name": "Update Log", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"durationMinutes\": 45\n}" }, "url": "{{baseUrl}}/workout-logs/{{logId}}" } },
+        { "name": "Delete Log", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/workout-logs/{{logId}}" } }
+      ]
+    },
+    {
+      "name": "Progress",
+      "item": [
+        { "name": "List Progress", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/progress" } },
+        { "name": "Get Progress", "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/progress/{{progressId}}" } },
+        {
+          "name": "Create Progress (saves id)",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["const json = pm.response.json();", "if (json.id) pm.collectionVariables.set('progressId', json.id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"recordedAt\": \"2026-11-25\",\n  \"weightKg\": 70.5,\n  \"bodyFatPercent\": 18.5,\n  \"notes\": \"Initial progress\"\n}" }, "url": "{{baseUrl}}/progress" }
+        },
+        { "name": "Update Progress", "request": { "method": "PATCH", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"weightKg\": 69.8\n}" }, "url": "{{baseUrl}}/progress/{{progressId}}" } },
+        { "name": "Delete Progress", "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/progress/{{progressId}}" } }
+      ]
+    }
+  ]
+}

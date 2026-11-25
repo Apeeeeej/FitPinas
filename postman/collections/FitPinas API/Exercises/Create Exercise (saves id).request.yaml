@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/exercises"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "name": "Jumping Jacks",
+      "muscleGroup": "Full Body",
+      "difficulty": "beginner",
+      "equipment": "None"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      const json = pm.response.json();
+      if (json.id) pm.collectionVariables.set('exerciseId', json.id);
+    language: text/javascript
+order: 3000

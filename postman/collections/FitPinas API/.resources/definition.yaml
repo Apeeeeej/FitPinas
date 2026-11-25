@@ -1,0 +1,15 @@
+$kind: collection
+description: Postman collection for the FitPinas NestJS backend.
+variables:
+  baseUrl: http://localhost:3000/api
+  token: ""
+  email: your-email@example.com
+  password: YourPassword123!
+  exerciseId: "1"
+  planId: "1"
+  logId: "1"
+  progressId: "1"
+scripts:
+  - type: http:beforeRequest
+    code: "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });"
+    language: text/javascript

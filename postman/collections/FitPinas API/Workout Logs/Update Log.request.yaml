@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/workout-logs/{{logId}}"
+method: PATCH
+headers:
+  Authorization: Bearer {{token}}
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "durationMinutes": 45
+    }
+order: 4000
