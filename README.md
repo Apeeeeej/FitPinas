@@ -20,6 +20,10 @@ FitPinas is a fitness management REST API for workout plans, exercises, workout 
 
 The API is available at `http://localhost:3000/api`.
 
+## Database export
+
+The sanitized database export is in `database/fitpinas.sql`. Import it through phpMyAdmin or the MySQL client before starting the API. It includes the complete schema and generic sample exercises; no user credentials are included. Register a new account through `POST /api/auth/register` after importing.
+
 ## Main API resources
 
 - `POST /api/auth/register`
